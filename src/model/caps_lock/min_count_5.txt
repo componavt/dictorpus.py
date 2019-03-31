@@ -1,0 +1,42 @@
+2019-03-30 22:21:00,844 : INFO : 'pattern' package not found; tag filters are not available for English
+2019-03-30 22:21:00,919 : INFO : collecting all words and their counts
+2019-03-30 22:21:00,919 : INFO : PROGRESS: at sentence #0, processed 0 words, keeping 0 word types
+2019-03-30 22:21:00,940 : INFO : PROGRESS: at sentence #10000, processed 80810 words, keeping 23364 word types
+2019-03-30 22:21:00,963 : INFO : PROGRESS: at sentence #20000, processed 173118 words, keeping 37732 word types
+2019-03-30 22:21:00,988 : INFO : PROGRESS: at sentence #30000, processed 261184 words, keeping 50803 word types
+2019-03-30 22:21:01,013 : INFO : PROGRESS: at sentence #40000, processed 358702 words, keeping 61391 word types
+2019-03-30 22:21:01,025 : INFO : collected 65800 word types from a corpus of 401714 raw words and 44822 sentences
+2019-03-30 22:21:01,025 : INFO : Loading a fresh vocabulary
+2019-03-30 22:21:01,093 : INFO : effective_min_count=5 retains 9880 unique words (15% of original 65800, drops 55920)
+2019-03-30 22:21:01,093 : INFO : effective_min_count=5 leaves 320810 word corpus (79% of original 401714, drops 80904)
+2019-03-30 22:21:01,125 : INFO : deleting the raw counts dictionary of 65800 items
+2019-03-30 22:21:01,127 : INFO : sample=0.001 downsamples 37 most-common words
+2019-03-30 22:21:01,127 : INFO : downsampling leaves estimated 287975 word corpus (89.8% of prior 320810)
+2019-03-30 22:21:01,148 : INFO : estimated required memory for 9880 words and 100 dimensions: 12844000 bytes
+2019-03-30 22:21:01,148 : INFO : resetting layer weights
+2019-03-30 22:21:01,255 : INFO : training model with 3 workers on 9880 vocabulary and 100 features, using sg=0 hs=0 sample=0.001 negative=5 window=5
+2019-03-30 22:21:01,497 : INFO : worker thread finished; awaiting finish of 2 more threads
+2019-03-30 22:21:01,498 : INFO : worker thread finished; awaiting finish of 1 more threads
+2019-03-30 22:21:01,502 : INFO : worker thread finished; awaiting finish of 0 more threads
+2019-03-30 22:21:01,502 : INFO : EPOCH - 1 : training on 401714 raw words (287919 effective words) took 0.2s, 1193823 effective words/s
+2019-03-30 22:21:01,720 : INFO : worker thread finished; awaiting finish of 2 more threads
+2019-03-30 22:21:01,721 : INFO : worker thread finished; awaiting finish of 1 more threads
+2019-03-30 22:21:01,725 : INFO : worker thread finished; awaiting finish of 0 more threads
+2019-03-30 22:21:01,725 : INFO : EPOCH - 2 : training on 401714 raw words (287951 effective words) took 0.2s, 1327064 effective words/s
+2019-03-30 22:21:01,951 : INFO : worker thread finished; awaiting finish of 2 more threads
+2019-03-30 22:21:01,953 : INFO : worker thread finished; awaiting finish of 1 more threads
+2019-03-30 22:21:01,956 : INFO : worker thread finished; awaiting finish of 0 more threads
+2019-03-30 22:21:01,956 : INFO : EPOCH - 3 : training on 401714 raw words (288012 effective words) took 0.2s, 1279823 effective words/s
+2019-03-30 22:21:02,168 : INFO : worker thread finished; awaiting finish of 2 more threads
+2019-03-30 22:21:02,169 : INFO : worker thread finished; awaiting finish of 1 more threads
+2019-03-30 22:21:02,173 : INFO : worker thread finished; awaiting finish of 0 more threads
+2019-03-30 22:21:02,173 : INFO : EPOCH - 4 : training on 401714 raw words (287865 effective words) took 0.2s, 1366194 effective words/s
+2019-03-30 22:21:02,399 : INFO : worker thread finished; awaiting finish of 2 more threads
+2019-03-30 22:21:02,401 : INFO : worker thread finished; awaiting finish of 1 more threads
+2019-03-30 22:21:02,405 : INFO : worker thread finished; awaiting finish of 0 more threads
+2019-03-30 22:21:02,405 : INFO : EPOCH - 5 : training on 401714 raw words (287775 effective words) took 0.2s, 1272153 effective words/s
+2019-03-30 22:21:02,405 : INFO : training on a 2008570 raw words (1439522 effective words) took 1.1s, 1251969 effective words/s
+2019-03-30 22:21:02,405 : INFO : saving Word2Vec object under ./model/min_count5.model, separately None
+2019-03-30 22:21:02,405 : INFO : not storing attribute vectors_norm
+2019-03-30 22:21:02,405 : INFO : not storing attribute cum_table
+2019-03-30 22:21:02,479 : INFO : saved ./model/min_count5.model

@@ -9,22 +9,25 @@ import operator
 import collections
 
 import os, sys
-reload(sys)
-sys.setdefaultencoding("utf-8")
+#reload(sys)
+#sys.setdefaultencoding("utf-8")
 
 logging.basicConfig(format='%(asctime)s : %(levelname)s : %(message)s', level=logging.INFO)
 
 import gensim
 
 dirname  = './data'
-fname = 'vepkar-2019-03-29-vep.txt'
+fname = 'vepkar-2019-03-30-vep.txt'
 
-with open(os.path.join(dirname, fname)) as f:
-  sentences = f.readlines()
- 
-model = gensim.models.Word2Vec(sentences)
+sentences = []
+with open(os.path.join(dirname, fname), encoding="utf8") as f:
+    for line in f:
+        tokens = line.rstrip('\n').lower().split('|')
+        sentences.append( tokens )
+        #print (tokens)
 
-model.save('./model/model_temp')
+model = gensim.models.Word2Vec(sentences, min_count=5)
+model.save('./model/min_count5.model')
 
 
 # 2/6 = |IntS|/|S|, [[сосредоточиваться]],  IntS(сосредоточиваться сосредотачиваться)  OutS(собираться отвлекаться фокусироваться концентрироваться) 
