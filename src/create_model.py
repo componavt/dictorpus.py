@@ -17,7 +17,7 @@ logging.basicConfig(format='%(asctime)s : %(levelname)s : %(message)s', level=lo
 import gensim
 
 dirname  = './data'
-fname = 'vepkar-2019-03-30-vep.txt'
+fname = 'vepkar-2019-03-31-vep_lemma.txt'
 
 sentences = []
 with open(os.path.join(dirname, fname), encoding="utf8") as f:
@@ -27,12 +27,12 @@ with open(os.path.join(dirname, fname), encoding="utf8") as f:
         #print (tokens)
 
 model = gensim.models.Word2Vec(sentences, min_count=5)
-model.save('./model/min_count5.model')
+model.save('./model/lemmas/min_count_5.model')
 
 
 # 2/6 = |IntS|/|S|, [[сосредоточиваться]],  IntS(сосредоточиваться сосредотачиваться)  OutS(собираться отвлекаться фокусироваться концентрироваться) 
 # source_words = [u'сосредоточиваться', u'сосредотачиваться', u'собираться', u'отвлекаться', u'фокусироваться', u'концентрироваться']
-source_words = [u'лить', u'кутить', u'сосредоточиваться', u'сосредотачиваться', u'собираться', u'отвлекаться', u'фокусироваться', u'концентрироваться']
+#source_words = [u'лить', u'кутить', u'сосредоточиваться', u'сосредотачиваться', u'собираться', u'отвлекаться', u'фокусироваться', u'концентрироваться']
 
 # 0/6 = |IntS|/|S|, [[абсолют]],  OutS(абсолют логос первооснова творец совершенство идеал) 
 
