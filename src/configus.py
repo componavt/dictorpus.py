@@ -3,7 +3,7 @@
 
 # Configurations parameters
 
-MODEL_NAME = "min_count_4.model"
+MODEL_NAME = "min_count_5.model"
 #MODEL_NAME = "ruscorpora_2017_1_600_2.bin" # .lower()+"_NOUN" etc... good last model with universal-pos-tags, see https://github.com/slavpetrov/universal-pos-tags
 
 #MODEL_NAME = "news_2015.model.bin"
