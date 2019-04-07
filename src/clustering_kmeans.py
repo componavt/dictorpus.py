@@ -39,14 +39,20 @@ X = model[ model.wv.vocab ]
 # todo: How to select number of clusters?..
 # answer: example with graph, where axis-X is number of clusters
 
-NUM_CLUSTERS=1000
-kclusterer = KMeansClusterer(NUM_CLUSTERS, distance=nltk.cluster.util.cosine_distance, repeats=7) #repeats=25
-assigned_clusters = kclusterer.cluster(X, assign_clusters=True)
+#Error: no centroid defined for empty cluster.
+#Try setting argument 'avoid_empty_clusters' to True
+
+NUM_CLUSTERS=100
+kclusterer = KMeansClusterer(NUM_CLUSTERS, distance=nltk.cluster.util.cosine_distance, repeats=4) #repeats=25
+assigned_clusters = kclusterer.cluster(X, assign_clusters=True, trace=True)
+print("assigned_clusters: found.")
 # print("assigned_clusters: {0}".format(assigned_clusters))
 
 words = list( model.wv.vocab )
-#for i, word in enumerate(words):  
-#    print (word + ":" + str(assigned_clusters[i])) too huge list
+for i, word in enumerate(words):  
+    print (word + ":" + str(assigned_clusters[i]))
+    if i == 7:
+        break       # too huge list 'words'
 
 kmeans = cluster.KMeans(n_clusters=NUM_CLUSTERS)
 kmeans.fit(X)
@@ -78,9 +84,9 @@ Y=model_tsne.fit_transform(X)
  
 plt.scatter(Y[:, 0], Y[:, 1], c=assigned_clusters, s=3,alpha=.5)
  
-#for j in range(len(sentences)):    
-#   plt.annotate(assigned_clusters[j],xy=(Y[j][0], Y[j][1]),xytext=(0,0),textcoords='offset points')
-#   print ("%s %s" % (assigned_clusters[j],  sentences[j]))
+for j in range(len(words)):
+   plt.annotate(assigned_clusters[j],xy=(Y[j][0], Y[j][1]),xytext=(0,0),textcoords='offset points')
+   print ("%s %s" % (assigned_clusters[j],  words[j]))
  
  
 plt.show()

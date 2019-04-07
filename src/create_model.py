@@ -26,8 +26,8 @@ with open(os.path.join(dirname, fname), encoding="utf8") as f:
         sentences.append( tokens )
         #print (tokens)
 
-model = gensim.models.Word2Vec(sentences, min_count=5)
-model.save('./model/lemmas/min_count_5.model')
+model = gensim.models.Word2Vec(sentences, min_count=5, size=100, window=5, workers=4)
+model.save('./model/lemmas/min_count_5_window_5.model')
 
 
 # 2/6 = |IntS|/|S|, [[сосредоточиваться]],  IntS(сосредоточиваться сосредотачиваться)  OutS(собираться отвлекаться фокусироваться концентрироваться) 
