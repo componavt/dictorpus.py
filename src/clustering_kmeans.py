@@ -31,9 +31,6 @@ model = gensim.models.Word2Vec.load(configus.MODEL_PATH)
 n_words = len(model.wv.vocab)
 print ("\nNumber of words in vocabulary is {}.".format( n_words ))
 
-#X = model.wv.vocab[n_words]
-#X = model.wv.vocab
-# X = model[n_words]      # TypeError: 'int' object is not iterable
 X = model[ model.wv.vocab ]
 
 # todo: How to select number of clusters?..
@@ -43,14 +40,14 @@ X = model[ model.wv.vocab ]
 #Try setting argument 'avoid_empty_clusters' to True
 
 NUM_CLUSTERS=100
-kclusterer = KMeansClusterer(NUM_CLUSTERS, distance=nltk.cluster.util.cosine_distance, repeats=4) #repeats=25
-assigned_clusters = kclusterer.cluster(X, assign_clusters=True, trace=True)
-print("assigned_clusters: found.")
-# print("assigned_clusters: {0}".format(assigned_clusters))
+kclusterer = KMeansClusterer(NUM_CLUSTERS, distance=nltk.cluster.util.cosine_distance, repeats=1) #repeats=25
+cluster_arrays = kclusterer.cluster(X, assign_clusters=True, trace=True)
+print("cluster_arrays: found.")
+# print("cluster_arrays: {0}".format(cluster_arrays))
 
 words = list( model.wv.vocab )
 for i, word in enumerate(words):  
-    print (word + ":" + str(assigned_clusters[i]))
+    print (word + ":" + str(cluster_arrays[i]))
     if i == 7:
         break       # too huge list 'words'
 
@@ -68,10 +65,18 @@ print (centroids)
 print ("Score (Opposite of the value of X on the K-means objective which is Sum of distances of samples to their closest cluster center):")
 print (kmeans.score(X))
   
-silhouette_score = metrics.silhouette_score(X, labels, metric='euclidean')
+silhouette_score = metrics.silhouette_score(X, labels, metric='cosine')
   
 print ("Silhouette_score: ")
 print (silhouette_score)
+
+# how to calculate outliers for kmeans?
+# outliers = X[clusters == -1]
+# print("outliers number: {0}".format( len (outliers)))
+
+# n_clusters = len(set(clusters)) - (1 if -1 else 0)
+# print("clusters number: {0}".format( n_clusters))
+
 
 #Plot the clusters obtained using k means
 import matplotlib.pyplot as plt
@@ -82,12 +87,11 @@ np.set_printoptions(suppress=True)
  
 Y=model_tsne.fit_transform(X)
  
-plt.scatter(Y[:, 0], Y[:, 1], c=assigned_clusters, s=3,alpha=.5)
+plt.scatter(Y[:, 0], Y[:, 1], c=cluster_arrays, s=3,alpha=.5)
  
-for j in range(len(words)):
-   plt.annotate(assigned_clusters[j],xy=(Y[j][0], Y[j][1]),xytext=(0,0),textcoords='offset points')
-   print ("%s %s" % (assigned_clusters[j],  words[j]))
- 
+#for j in range(len(words)):
+#   plt.annotate(cluster_arrays[j],xy=(Y[j][0], Y[j][1]),xytext=(0,0),textcoords='offset points')
+#   print ("%s %s" % (cluster_arrays[j],  words[j]))
  
 plt.show()
 
