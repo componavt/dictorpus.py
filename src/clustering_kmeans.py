@@ -22,7 +22,8 @@ from nltk.cluster import KMeansClusterer
 import nltk
 import numpy as np 
 
-from sklearn import cluster
+from sklearn.cluster import KMeans
+# from sklearn import cluster
 from sklearn import metrics
 
 import configus
@@ -30,6 +31,20 @@ model = gensim.models.Word2Vec.load(configus.MODEL_PATH)
 
 n_words = len(model.wv.vocab)
 print ("\nNumber of words in vocabulary is {}.".format( n_words ))
+for key, value in model.wv.vocab.items(): # print all words from vocabulary
+    print( key, value)
+    break
+
+# dictionaries: from word to index, from index to word
+word_idx = dict((word, i) for i, word in enumerate(model.wv.vocab))
+idx_word = dict((i, word) for i, word in enumerate(model.wv.vocab))
+
+for word, idx in word_idx.items():
+    # word = 'tütär'
+    if word in model:
+        print("word_idx[{0}]={1}".format(word, idx ))
+        print("idx_word[{1}]={0}\n".format(word, idx ))
+    break
 
 X = model[ model.wv.vocab ]
 
@@ -39,25 +54,33 @@ X = model[ model.wv.vocab ]
 #Error: no centroid defined for empty cluster.
 #Try setting argument 'avoid_empty_clusters' to True
 
-NUM_CLUSTERS=100
-kclusterer = KMeansClusterer(NUM_CLUSTERS, distance=nltk.cluster.util.cosine_distance, repeats=1) #repeats=25
-cluster_arrays = kclusterer.cluster(X, assign_clusters=True, trace=True)
-print("cluster_arrays: found.")
+NUM_CLUSTERS=200
+
+### NLTK ########################
+###kclusterer = KMeansClusterer(NUM_CLUSTERS, distance=nltk.cluster.util.cosine_distance, repeats=1) #repeats=25
+###cluster_arrays = kclusterer.cluster(X, assign_clusters=True, trace=True)
+###print("cluster_arrays: found.")
 # print("cluster_arrays: {0}".format(cluster_arrays))
 
-words = list( model.wv.vocab )
-for i, word in enumerate(words):  
-    print (word + ":" + str(cluster_arrays[i]))
-    if i == 7:
-        break       # too huge list 'words'
+###words = list( model.wv.vocab )
+###for i, word in enumerate(words):  
+###    print (word + ":" + str(cluster_arrays[i]))
+###    if i == 7:
+###        break       # too huge list 'words'
 
-kmeans = cluster.KMeans(n_clusters=NUM_CLUSTERS)
+### plt.scatter(Y[:, 0], Y[:, 1], c=cluster_arrays, s=3,alpha=.5)
+ 
+#for j in range(len(words)):
+#   plt.annotate(cluster_arrays[j],xy=(Y[j][0], Y[j][1]),xytext=(0,0),textcoords='offset points')
+#   print ("%s %s" % (cluster_arrays[j],  words[j]))
+
+kmeans = KMeans(n_clusters=NUM_CLUSTERS, n_jobs=4)
 kmeans.fit(X)
   
-labels = kmeans.labels_
+labels    = kmeans.labels_
 centroids = kmeans.cluster_centers_
   
-print ("Cluster id labels for inputted data")
+print ("\nCluster id labels for inputted data")
 print (labels)
 print ("Centroids data")
 print (centroids)
@@ -70,13 +93,22 @@ silhouette_score = metrics.silhouette_score(X, labels, metric='cosine')
 print ("Silhouette_score: ")
 print (silhouette_score)
 
-# how to calculate outliers for kmeans?
-# outliers = X[clusters == -1]
-# print("outliers number: {0}".format( len (outliers)))
+# how to calculate number of points in each kluster?
+n_clusters_result = len(set(labels)) - (1 if -1 else 0)
+print("Number of clusters: {0}".format( n_clusters_result))
+# print("labels[0, 10]: {0}".format( labels[0:10]))
+#        labels[0, 10]: [ 51 131 119 152  87 167  80 147   4  97]
 
-# n_clusters = len(set(clusters)) - (1 if -1 else 0)
-# print("clusters number: {0}".format( n_clusters))
+# gather words to created cluster
+cluster_arrays = [X[labels == i] for i in range(n_clusters_result)]
 
+for i, clu in enumerate (cluster_arrays): 
+    print("Cluster {0} has {1} words.".format(i, len(clu)))
+    # print("cluster {0} has {1} words. cluster is {2}".format(i, len(clu), clu))
+print
+
+# todo draw words:
+# https://machinelearningmastery.com/develop-word-embeddings-python-gensim/
 
 #Plot the clusters obtained using k means
 import matplotlib.pyplot as plt
@@ -87,7 +119,16 @@ np.set_printoptions(suppress=True)
  
 Y=model_tsne.fit_transform(X)
  
-plt.scatter(Y[:, 0], Y[:, 1], c=cluster_arrays, s=3,alpha=.5)
+plt.scatter(Y[:, 0], Y[:, 1], c=kmeans.labels_, s=3,alpha=.5, cmap='rainbow') 
+# plt.scatter(kmeans.cluster_centers_[:,0], kmeans.cluster_centers_[:,1], color='black') 
+
+# todo (first, move centroids via tsne.transform...) 
+# Plot the centroids as a white X
+#centroids = kmeans.cluster_centers_
+#plt.scatter(centroids[:, 0], centroids[:, 1],
+#            marker='x', s=169, linewidths=3,
+#            color='black', zorder=10)
+
  
 #for j in range(len(words)):
 #   plt.annotate(cluster_arrays[j],xy=(Y[j][0], Y[j][1]),xytext=(0,0),textcoords='offset points')
