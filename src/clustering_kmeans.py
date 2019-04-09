@@ -152,29 +152,44 @@ print("Number of small clusters is {0} out of {1} clusters.".format( n_small_clu
 import matplotlib.pyplot as plt
 from sklearn.manifold import TSNE
 
-plt.subplot(2, 1, 1)
-plt.title("POS (one type) depends on cluster's size. {0} of {1} small clusters (2-{2} elements) .".format(n_small_clusters, NUM_CLUSTERS, SMALL_CLUSTER_SIZE));
+ax1 = plt.subplot(2, 1, 1)
+plt.title("POS (one type) depends on cluster's size. {0} of {1} small clusters (2-{2} elements)".format(n_small_clusters, NUM_CLUSTERS, SMALL_CLUSTER_SIZE));
 
 pos_color = {
   "noun": "red",
   "verb": "green",
   "adv": "blue",
-  "adj": "brown"
+  "adj": "yellow"
 }
-rng = np.random.RandomState(0)
+xy = dict()
 for i, (pos_, pos_percent, n_pos) in cluster_POS_quality.items():
-    
-    rand_x = (rng.randn(100) - 50) / 10
-    rand_y = (rng.randn(100) - 50)
-
+    x = n_pos
+    y = pos_percent
+    xy[ (x,y) ] = 1 + xy.get((x,y), 0)  # 0 is default_value, if we increment (x,y) in first time
+                                        #                     and xy.get((x,y)) do not exist
+for i, (pos_, pos_percent, n_pos) in cluster_POS_quality.items():
+    x = n_pos
+    y = pos_percent
     color_ = "grey"
     if pos_ in pos_color:
         color_ = pos_color[pos_]
-    plt.scatter(abs(n_pos+rand_x), abs(pos_percent+rand_y), c=color_, s=150,alpha=.1, cmap='rainbow') 
+    size_ = xy[ (x, y) ]
+    plt.scatter(x, y, c=color_, s=size_*200,alpha=.1, cmap='set3')
+    plt.annotate(size_, (x, y))
 
+ax1.set_yticks([20, 40, 50, 60, 80, 100], minor=False)
+ax1.axhline(50, linestyle='--', color='red') # horizontal red line - 50%
 
-plt.subplot(2, 1, 2)
-plt.title('word2vec model={0}. k-means. Clusters={1}'.format(configus.MODEL_NAME, NUM_CLUSTERS));
+##fig = plt.figure()
+plt.ylabel('POS one type in cluster, %', color='green', fontsize=15)
+#plt.xlabel('Words in cluster')
+plt.text(0.95, 0.01, 'Words in cluster',
+        verticalalignment='bottom', horizontalalignment='right',
+        transform = ax1.transAxes,
+        color='green', fontsize=15)
+
+plt.subplot(2, 1, 2 )
+plt.title('word2vec model={0}. k-means. {1} clusters'.format(configus.MODEL_NAME, NUM_CLUSTERS));
 
 model_tsne = TSNE(n_components=2, random_state=0)
 np.set_printoptions(suppress=True)
@@ -200,30 +215,12 @@ plt.scatter(Y[:, 0], Y[:, 1], c=kmeans.labels_, s=3,alpha=.5, cmap='rainbow')
 #fig, ax = plt.subplots()
 #plt.legend()
 
+#fig = plt.figure(frameon=False)
+#plt.set_size_inches(5,5)
+#plt.set_size_inches(1024.0/float(DPI),1024.0/float(DPI))
+
+filename = '{0}_k-means_{1}-clusters'.format(configus.MODEL_NAME, NUM_CLUSTERS)
+plt.savefig(configus.SRC_PATH + "fig/kmeans/" + filename, dpi=900)
+# plt.rcParams["figure.figsize"] = fig_size
+
 plt.show()
-
-#fig = plt.figure()
-#ax = fig.add_subplot(111)
-#scatter = ax.scatter(wh1['Economy..GDP.per.Capita.'],wh1['Trust..Government.Corruption.'],
-#                     c=kmeans[0],s=50)
-#ax.set_title('K-Means Clustering')
-#ax.set_xlabel('GDP per Capita')
-#ax.set_ylabel('Corruption')
-#plt.colorbar(scatter)
-
-
-#words = lib.filter_vocab_words.filterVocabWords( source_words, model.wv.vocab )
-#words = lib.filter_vocab_words.filterVocabWords( source_words, model.wv.vocab )
-#print ("After filter")
-#print (lib.string_util.joinUtf8( ",", words ))  # after filter, now there are only words with vectors
-
-#X = model[model.vocab]
-
-#print("model.wv.most_similar('madal'): {0}".format(model.wv.most_similar("madal")))
-#print(model.wv.most_similar("madal"))
-
-#while words:
-#    #print string_util.joinUtf8( ",", words )
-#    out_word = model.doesnt_match(words)
-#    print u"    - '{}'".format( out_word )
-#    words.remove( out_word )
