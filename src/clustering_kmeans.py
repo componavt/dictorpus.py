@@ -55,7 +55,9 @@ X = model[ model.wv.vocab ]
 #Error: no centroid defined for empty cluster.
 #Try setting argument 'avoid_empty_clusters' to True
 
-NUM_CLUSTERS=200
+#NUM_CLUSTERS=200
+NUM_CLUSTERS = int(float(sys.argv[1]))
+print("The first argument (NUM_CLUSTERS) is: {}.".format(NUM_CLUSTERS))
 
 kmeans = KMeans(n_clusters=NUM_CLUSTERS, n_jobs=4)
 kmeans.fit(X)
@@ -152,8 +154,10 @@ print("Number of small clusters is {0} out of {1} clusters.".format( n_small_clu
 import matplotlib.pyplot as plt
 from sklearn.manifold import TSNE
 
+plt.figure(figsize=(8.5, 6.4), dpi=100) # = 640x480
+
 ax1 = plt.subplot(2, 1, 1)
-plt.title("POS (one type) depends on cluster's size. {0} of {1} small clusters (2-{2} elements)".format(n_small_clusters, NUM_CLUSTERS, SMALL_CLUSTER_SIZE));
+plt.title("POS (one type) depends on cluster's size");
 
 pos_color = {
   "noun": "red",
@@ -181,15 +185,23 @@ ax1.set_yticks([20, 40, 50, 60, 80, 100], minor=False)
 ax1.axhline(50, linestyle='--', color='red') # horizontal red line - 50%
 
 ##fig = plt.figure()
-plt.ylabel('POS one type in cluster, %', color='green', fontsize=15)
-#plt.xlabel('Words in cluster')
+plt.ylabel('POS one type in cluster, %', color='green') #, fontsize=15)
+plt.text(0.95, 0.91, 
+        "{0} of {1} small clusters (2-{2} elements)".format(
+            n_small_clusters, NUM_CLUSTERS, SMALL_CLUSTER_SIZE),
+        verticalalignment='top', horizontalalignment='right',
+        transform = ax1.transAxes)
+
 plt.text(0.95, 0.01, 'Words in cluster',
         verticalalignment='bottom', horizontalalignment='right',
         transform = ax1.transAxes,
-        color='green', fontsize=15)
+        color='green') # , fontsize=15)
 
 plt.subplot(2, 1, 2 )
-plt.title('word2vec model={0}. k-means. {1} clusters'.format(configus.MODEL_NAME, NUM_CLUSTERS));
+plt.xlabel("word2vec model={0}. k-means. {1} clusters".format(
+    configus.MODEL_NAME, NUM_CLUSTERS))
+#plt.title('word2vec model={0}. k-means. {1} clusters'.format(
+#    configus.MODEL_NAME, NUM_CLUSTERS), y=-0.01);
 
 model_tsne = TSNE(n_components=2, random_state=0)
 np.set_printoptions(suppress=True)
@@ -207,20 +219,8 @@ plt.scatter(Y[:, 0], Y[:, 1], c=kmeans.labels_, s=3,alpha=.5, cmap='rainbow')
 #            marker='x', s=169, linewidths=3,
 #            color='black', zorder=10)
 
- 
-#for j in range(len(words)):
-#   plt.annotate(cluster_X[j],xy=(Y[j][0], Y[j][1]),xytext=(0,0),textcoords='offset points')
-#   print ("%s %s" % (cluster_X[j],  words[j]))
-
-#fig, ax = plt.subplots()
-#plt.legend()
-
-#fig = plt.figure(frameon=False)
-#plt.set_size_inches(5,5)
-#plt.set_size_inches(1024.0/float(DPI),1024.0/float(DPI))
-
 filename = '{0}_k-means_{1}-clusters'.format(configus.MODEL_NAME, NUM_CLUSTERS)
-plt.savefig(configus.SRC_PATH + "fig/kmeans/" + filename, dpi=900)
+plt.savefig(configus.SRC_PATH + "fig/kmeans/" + filename, bbox_inches='tight', dpi=900)
 # plt.rcParams["figure.figsize"] = fig_size
 
-plt.show()
+# plt.show()
