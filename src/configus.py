@@ -3,14 +3,11 @@
 
 # Configurations parameters
 
-MODEL_NAME = "min_count_4_window_2.model"
-#MODEL_NAME = "ruscorpora_2017_1_600_2.bin" # .lower()+"_NOUN" etc... good last model with universal-pos-tags, see https://github.com/slavpetrov/universal-pos-tags
+MODEL_NAME = "min_count_4_window_2"
 
-#MODEL_NAME = "news_2015.model.bin"
-#MODEL_NAME = "news_2017_0_300_2.bin"
+SRC_PATH = "/data/all/projects/git/dictorpus.addon/dictorpus.py/src/"
 
-# failed, unknown words! MODEL_NAME = "ruwikiruscorpora.model.bin"
+LEMMA_POS = "vepkar-2019-04-05-lemma-pos-vep.txt"
+LEMMA_POS_PATH = SRC_PATH + "data/" + LEMMA_POS
 
-MODEL_PATH = "/data/all/projects/git/dictorpus.addon/dictorpus.py/src/model/lemmas/" + MODEL_NAME   # home 
-#MODEL_PATH = "/media/data/all/soft_new/linguistics/rusvectores/" + MODEL_NAME  # hasee
-
+MODEL_PATH = SRC_PATH + "model/lemmas/" + MODEL_NAME + ".model"  # home 
