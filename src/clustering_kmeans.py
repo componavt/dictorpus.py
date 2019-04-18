@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-# K Means Clustering of words with NLTK Library.
+# K Means Clustering of words with scikit-learn library.
 # see http://ai.intelligentonlinetools.com/ml/k-means-clustering-example-word2vec/
 
 import logging
@@ -23,7 +23,6 @@ import lib.read_lemma_pos_file
 import numpy as np 
 
 from sklearn.cluster import KMeans
-# from sklearn import cluster
 from sklearn import metrics
 
 import configus
@@ -31,7 +30,7 @@ model = gensim.models.Word2Vec.load(configus.MODEL_PATH)
 
 n_words = len(model.wv.vocab)
 print ("\nNumber of words in vocabulary is {}.".format( n_words ))
-for key, value in model.wv.vocab.items(): # print all words from vocabulary
+for key, value in model.wv.vocab.items(): # print fist word from vocabulary
     print( key, value)
     break
 
@@ -121,7 +120,7 @@ for i, cluster_idx in enumerate (labels):
         pos_ = lemma_POS[word_]
         cluster_POS[cluster_idx].append(pos_)
 
-SMALL_CLUSTER_SIZE = 10
+SMALL_CLUSTER_SIZE = 10 # calculates POS number only for small clusters
 
 # calculate POS quality for each cluster (all words with the same type of POS means better quality)
 cluster_POS_quality = dict()
@@ -209,7 +208,9 @@ np.set_printoptions(suppress=True)
 Y = model_tsne.fit_transform(X)
 #centers_new = model_tsne.fit_transform(kmeans.cluster_centers_)
  
+#plt.scatter(Y[:, 0], Y[:, 1], c=kmeans.labels_, s=3,alpha=.5, cmap='rainbow') 
 plt.scatter(Y[:, 0], Y[:, 1], c=kmeans.labels_, s=3,alpha=.5, cmap='rainbow') 
+
 #plt.scatter(centers_new[:,0], centers_new[:,1], color='black') 
 
 # todo (first, move centroids via tsne.transform...) 
