@@ -18,6 +18,7 @@ import gensim
 import lib.filter_vocab_words
 import lib.string_util
 import lib.part_of_speech
+import lib.cluster2size
 import lib.read_lemma_pos_file
 
 import numpy as np 
@@ -41,12 +42,12 @@ idx_word = dict((i, word) for i, word in enumerate(model.wv.vocab))
 
 for word, idx in word_idx.items():
     # word = 'tütär'
-    if word in model:
+    if word in model.wv:
         print("word_idx[{0}]={1}".format(word, idx ))
         print("idx_word[{1}]={0}".format(word, idx ))
     break
 
-X = model[ model.wv.vocab ]
+X = model.wv [ model.wv.vocab ]
 
 # todo: How to select right number of clusters?..
 # Answer: draw histogram: sizes of clusters depends on number of clusters (axis-X)
@@ -73,19 +74,16 @@ for i, word in enumerate(words):
 
 print ("\nCluster id labels for inputted data")
 print (labels)
-print ("Centroids data")
-print (centroids)
-  
-print ("Score (Opposite of the value of X on the K-means objective which is Sum of distances of samples to their closest cluster center):")
-print (kmeans.score(X))
-  
-silhouette_score = metrics.silhouette_score(X, labels, metric='cosine')
-  
-print ("Silhouette_score: ")
-print (silhouette_score)
+#print ("Centroids data")
+#print (centroids) # too huge numbers
 
-# how to calculate number of points in each kluster?
-n_clusters_result = len(set(labels)) - (1 if -1 else 0)
+score = kmeans.score(X)
+silhouette_score = metrics.silhouette_score(X, labels, metric='cosine')
+print ("Score (Sum of distances of samples to their closest cluster center): {}".format(score))
+print ("Silhouette_score: {}".format(silhouette_score))
+
+# how to calculate number of points in each cluster?
+n_clusters_result = len(set(labels))
 print("Number of clusters: {0}".format( n_clusters_result))
 print("Number of labels: {0}".format( len(labels)))
 # print("labels[0, 10]: {0}".format( labels[0:10]))
@@ -95,19 +93,12 @@ print("Number of labels: {0}".format( len(labels)))
 cluster_X     = [X       [labels == i] for i in range(n_clusters_result)]
 #cluster_words = [idx_word[labels == i] for i in range(n_clusters_result)]
 
-# list of clusters with a number of words in a cluster
-for i, clu in enumerate (cluster_X): 
-    print("Cluster {0} has {1} words.".format(i, len(clu)))
-    # print("cluster {0} has {1} words. cluster is {2}".format(i, len(clu), clu))
-    if i == 7:
-        break       # too huge list of clusters
-print("...\n")
-
 lemma_POS = lib.read_lemma_pos_file.readLemmaPOSFile(configus.LEMMA_POS_PATH)
 
 # get sets of words for each cluster
 word_sets = [set() for _ in range(NUM_CLUSTERS)]
 
+# gather POSes for each cluster
 # dictionary with lists: cluster_POS[i]={NOUN, VERB, NOUN...} - POSes for i-th cluster
 cluster_POS = dict()
 for i in range(NUM_CLUSTERS):
@@ -142,7 +133,8 @@ for i, set_ in enumerate (word_sets):
         n_small_clusters += 1
         if i in cluster_POS_quality:
             (pos_, pos_percent, n_pos) = cluster_POS_quality[i]
-            print("{0}. POS='{1}', {2:.1f}%, total {3} POS.".format(i, pos_, pos_percent, n_pos))
+            print("{0}. POS='{1}', {2:.1f}%, {3} POS of {4} words.".format(i, pos_, pos_percent, n_pos, 
+                        len(word_sets[i]))) # number of words in cluster
 
 print("Number of small clusters is {0} out of {1} clusters.".format( n_small_clusters, NUM_CLUSTERS))
 
@@ -151,7 +143,46 @@ print("Number of small clusters is {0} out of {1} clusters.".format( n_small_clu
 
 #Plot the clusters obtained using k means
 import matplotlib.pyplot as plt
+import matplotlib.cm     as mpl_cm          # for Brewer etc colourmaps
+import matplotlib.colors as colors
 from sklearn.manifold import TSNE
+
+
+# continuous colormap
+cpal = 'PuOr_r'
+cmap_cont = mpl_cm.get_cmap(cpal)
+
+# Add values for bad/over/under:
+badcol   = 'grey'
+overcol  = 'magenta'
+undercol = 'cyan'
+
+cmap_cont.set_bad(  color=badcol,   alpha=0.5 )
+cmap_cont.set_over( color=overcol,  alpha=0.5 )
+cmap_cont.set_under(color=undercol, alpha=0.5 )
+
+
+# cluster2size  - list from cluster number to size of this cluster
+# cluster_sizes - set of clusters sizes
+cluster2size, cluster_sizes = lib.cluster2size.getListCluster2Size( cluster_X )
+
+norm = colors.BoundaryNorm( sorted(cluster_sizes), ncolors=cmap_cont.N, clip=True)
+
+print("\n cluster2size=list[]. Clusters sizes for each cluster are [:7] ")
+print(cluster2size[:7])
+
+# Create labels2cluster_size - from word to cluster size
+# Given 1) labels - from word to cluster number
+#       2) cluster2size - from cluster number to cluster size
+labels2cluster_size = []
+for i, cluster_idx in enumerate (labels):
+    size_ = cluster2size[ cluster_idx ]
+    # print("i={0}, cluster_idx={1}, size_={2}".format(i, cluster_idx, size_))
+    labels2cluster_size.append( size_ )
+
+print("\n labels2cluster_size=... Clusters sizes for each word [:7] ")
+print(labels2cluster_size[:7])
+
 
 plt.figure(figsize=(8.5, 6.4), dpi=100) # = 640x480
 
@@ -177,19 +208,22 @@ for i, (pos_, pos_percent, n_pos) in cluster_POS_quality.items():
     if pos_ in pos_color:
         color_ = pos_color[pos_]
     size_ = xy[ (x, y) ]
-    plt.scatter(x, y, c=color_, s=size_*200,alpha=.1, cmap='set3')
+    plt.scatter(x, y, c=color_, s=size_*200,alpha=.1, cmap='set3', zorder=10)
     plt.annotate(size_, (x, y))
 
+ax1.set_xticks([ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10], minor=False)
 ax1.set_yticks([20, 40, 50, 60, 80, 100], minor=False)
-ax1.axhline(50, linestyle='--', color='red') # horizontal red line - 50%
+# ax1.axhline(50, linestyle='--', color='red') # horizontal red line - 50%
+plt.hlines(y=50, xmin=1, xmax=10, linestyle='--', color='red', zorder=5) # horizontal red line - 50%
+plt.ylim([20,110])
+plt.xlim([1,10])
 
 ##fig = plt.figure()
 plt.ylabel('POS one type in cluster, %', color='green') #, fontsize=15)
-plt.text(0.95, 0.91, 
-        "{0} of {1} small clusters (2-{2} elements)".format(
-            n_small_clusters, NUM_CLUSTERS, SMALL_CLUSTER_SIZE),
-        verticalalignment='top', horizontalalignment='right',
-        transform = ax1.transAxes)
+plt.text(0.95, 0.97, 
+        "Clusters: {0} (small) of {1}. Small cluster has 2-{2} elements.\nScore = {3: 10.2f}     Silhouette ={4: 8.3f} ".format(
+            n_small_clusters, NUM_CLUSTERS, SMALL_CLUSTER_SIZE, score, silhouette_score),
+        verticalalignment='top', horizontalalignment='right', transform = ax1.transAxes)
 
 plt.text(0.95, 0.01, 'Words in cluster',
         verticalalignment='bottom', horizontalalignment='right',
@@ -207,9 +241,9 @@ np.set_printoptions(suppress=True)
  
 Y = model_tsne.fit_transform(X)
 #centers_new = model_tsne.fit_transform(kmeans.cluster_centers_)
- 
+
 #plt.scatter(Y[:, 0], Y[:, 1], c=kmeans.labels_, s=3,alpha=.5, cmap='rainbow') 
-plt.scatter(Y[:, 0], Y[:, 1], c=kmeans.labels_, s=3,alpha=.5, cmap='rainbow') 
+plt.scatter(Y[:, 0], Y[:, 1], c=labels2cluster_size, s=3,alpha=.5, cmap = cmap_cont, norm=norm) 
 
 #plt.scatter(centers_new[:,0], centers_new[:,1], color='black') 
 
@@ -220,8 +254,14 @@ plt.scatter(Y[:, 0], Y[:, 1], c=kmeans.labels_, s=3,alpha=.5, cmap='rainbow')
 #            marker='x', s=169, linewidths=3,
 #            color='black', zorder=10)
 
-filename = '{0}_k-means_{1}-clusters'.format(configus.MODEL_NAME, NUM_CLUSTERS)
-plt.savefig(configus.SRC_PATH + "fig/kmeans/" + filename, bbox_inches='tight', dpi=900)
+filename = '{0}_k-means_{1:04d}-clusters'.format(configus.MODEL_NAME, NUM_CLUSTERS)
+plt.savefig(configus.SRC_PATH + "data/fig/kmeans/" + filename, bbox_inches='tight', dpi=900)
 # plt.rcParams["figure.figsize"] = fig_size
 
 # plt.show()
+
+# save to file parameters and quality results
+filename_quality = '{0}_k-means'.format( configus.MODEL_NAME )
+
+{1:04d}-clusters
+NUM_CLUSTERS

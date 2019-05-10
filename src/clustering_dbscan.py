@@ -126,7 +126,7 @@ for j in range(len(clusters)):
 #   print ("%s %s" % (clusters[j],  words[j]))
 
 filename = '{0}_dbscan_EPS-{1}_MIN_SAMPLES_{2}.png'.format(configus.MODEL_NAME, EPS, MIN_SAMPLES)
-plt.savefig(configus.SRC_PATH + "fig/dbscan/" + filename, bbox_inches='tight', dpi=300)
+plt.savefig(configus.SRC_PATH + "data/fig/dbscan/" + filename, bbox_inches='tight', dpi=300)
 
 #plt.show()
 

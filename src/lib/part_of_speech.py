@@ -6,6 +6,10 @@ import collections
 # Return    pos_ this frequent POS, 
 #           pos_percent the proportion of this POS in the pos_list 
 #           n_pos size of the source list.
+# For example:
+#       pos_list = ['pron', 'adj', 'noun', 'adj']
+# then  pos_='adj', pos_percent = 50.0%, n_pos = 4
+#
 def getMostFrequentPOS( pos_list ):
     "Count the percent of occurences of the most frequent part of speech in the list"
 
