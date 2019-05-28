@@ -255,7 +255,7 @@ plt.scatter(Y[:, 0], Y[:, 1], c=labels2cluster_size, s=3,alpha=.5, cmap = cmap_c
 #            color='black', zorder=10)
 
 filename = '{0}_k-means_{1:04d}-clusters'.format(configus.MODEL_NAME, NUM_CLUSTERS)
-plt.savefig(configus.SRC_PATH + "data/fig/kmeans/" + filename, bbox_inches='tight', dpi=900)
+plt.savefig(configus.SRC_PATH + "data\\fig\\kmeans\\" + filename, bbox_inches='tight', dpi=900)
 # plt.rcParams["figure.figsize"] = fig_size
 
 # plt.show()
@@ -263,5 +263,5 @@ plt.savefig(configus.SRC_PATH + "data/fig/kmeans/" + filename, bbox_inches='tigh
 # save to file parameters and quality results
 filename_quality = '{0}_k-means'.format( configus.MODEL_NAME )
 
-{1:04d}-clusters
-NUM_CLUSTERS
+#{1:04d}-clusters
+#NUM_CLUSTERS
