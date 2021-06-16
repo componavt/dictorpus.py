@@ -1,0 +1,38 @@
+Multichar_Symbols [N] [ADJ] 
+                  [SG] [PL] 
+                  [NOM] [ACC] [GEN] [PRT] [ESS] [TRANS] [IN+ESS] [IN+ABL] [IN+ALL] [AT+ESS] [AT+ABL] [AT+ALL]
+                  [PRT_SG] [PRT_PL]
+
+
+! W - weak grade
+! G - vocal stem
+
+LEXICON Root
+
+Noun;
+
+LEXICON Noun
+
+mieš    Ninf;
+pelto   Ninf;
+šuo     Ninf;
+
+LEXICON Ninf
+
+! nominative
+[N][NOM][SG]:G #;   ! strong
+[N][NOM][PL]:^tWG #; ! weak 
+
+! accusative
+[N][ACC][SG]:G    #;   ! strong
+[N][ACC][PL]:^tWG #; ! weak 
+
+!genitive
+[N][GEN][SG]:^nWG   #; !weak
+[N][GEN][PL]:i^en   #; !strong
+
+!partitive
+[N][PRT][SG]:[PRT_SG]   #;
+[N][PRT][PL]:[PRT_PL]   #;
+
+

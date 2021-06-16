@@ -1,18 +1,4 @@
-Multichar_Symbols [N] [ADJ] [SG] [PL] [NOM] [GEN] [PRT] [ESS] [TRANS] [IN+ESS] [IN+ABL] [IN+ALL] [AT+ESS] [AT+ABL] [AT+ALL] {p} {ä/i} {s} {ä/öi} {a/i} {k} {v/vv} {k/kk} {p/v/pp} {k/%0} {t/%0} {ä/i} {z/ss} {z/s/ss} {p/pp} {m/mm} {a/oi} {ä/oi} {ö/öi} {k/jj/kk} {l/ll} {k/%0/kk} {e/i} {V} {mm/mp/mpp} {s/tm} {%0/t/tt} {%0/h} {n/m/mm} {%0/z/ss} {%0/z/ks}
-
-! Stems are divided into 13 inflectional classes, mostly reflecting
-! different behavior in consonant gradation.
-! Special symbols such as {mm/mp/mpp} reflect the three
-! grades that are possible for a stem (weak, strong, superstrong)
-! These will be rewritten as mm or mp or mpp by the phonological component.
-
-! Special symbols in suffixes that the phonological component handles are inserted now and replaced later.
-! V = lengthen previous vowel
-! S = strong grade
-! SS = superstrong grade 
-! R = raise a vowel
-! A, O = vowels to be harmonized
-! Z = realized as z or s depending on MSD
+Multichar_Symbols [N] [ADJ] [SG] [PL] [NOM] [ACC] [GEN] [PRT] [ESS] [TRANS] [IN+ESS] [IN+ABL] [IN+ALL] [AT+ESS] [AT+ABL] [AT+ALL]
 
 LEXICON Root
 
@@ -20,68 +6,21 @@ Noun;
 
 LEXICON Noun
 
-!aika[N]:ai{k/jj/kk}{a/oi}      C01;
-!daatša[N]:daatš{a/oi}          C01;
-!hüvä[ADJ]:hü{v/vv}{ä/i}        C01;
-!ikkuna[N]:ikkun{a/oi}          C01;
-ikä[N]:i{k}{ä/i}               C01;
-!izä[N]:i{z/ss}{ä/öi}           C01;
-!jalka[N]:jal{k/%0}{a/oi}       C01;
-!kala[N]:ka{l/ll}{a/oi}         C01;
-!kukka[N]:ku{k}{a/i}            C01;
-!leipä[N]:lei{p/v/pp}{ä/i}      C01;
-!lupa[N]:lu{p/v/pp}{a/i}        C01;
-!päivä[N]:päiv{ä/i}             C01;
-!pökköiheinä[N]:pökköihein{ä/i} C01;
-!seppä[N]:se{p/pp}{ä/oi}        C01;
-!silmä[N]:sil{m/mm}{ä/i}        C01;
+! ?+[N]:0 Ninf;
+koiru Ninf;
+mua Ninf;
 
-LEXICON C01
 
-!nominative
-[NOM][SG]:VRS #;
-[NOM][PL]:Vt #;
+LEXICON Ninf
 
-!genitive
-[GEN][SG]:Vn     #;
-[GEN][PL]:XXnRSS  #;
+! nominative
+[N][NOM][SG]:0 #;
+[N][NOM][PL]:^t #; 
 
-!partitive
-[PRT][SG]:VVRSS   #;
-[PRT][PL]:XXARSS  #;
+! accusative
+[N][ACC][SG]:0 #;
+[N][ACC][PL]:^t #; 
 
-!illative
-[IN+ALL][SG]:VVSS #;
-[IN+ALL][PL]:XXRSS #;
-
-!inessive
-[IN+ESS][SG]:VVz #;
-[IN+ESS][PL]:XXRz #;
-
-!elative
-[IN+ABL][SG]:Vst #; !!
-[IN+ABL][PL]:XstR #;
-
-!allative
-[AT+ALL][SG]:Vlle #;
-[AT+ALL][PL]:XlleR #;
-
-!adessive
-[AT+ESS][SG]:VVl   #;
-[AT+ESS][PL]:XXlR   #; 
-
-!ablative
-[AT+ABL][SG]:Vlt  #;
-[AT+ABL][PL]:XltR  #;
-
-!translative
-[TRANS][SG]:Vks   #;
-[TRANS][PL]:XksR   #;
-
-!essive
-[ESS][SG]:VVnSS    #;
-[ESS][PL]:XXnSSR    #;
-
-! strong grade nom sg, gen pl,
-! superstrong: sg: part ill ess
-
+! genitive
+! [N][GEN][SG]:Vn     #;
+! [N][GEN][PL]:XXnRSS  #;

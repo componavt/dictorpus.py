@@ -1,0 +1,38 @@
+# 
+def Alphabet [%'|a|b|c|č|d|e|f|g|h|i|j|k|l|m|n|o|p|r|s|š|z|ž|t|u|v|y|ä|ö];
+def V [a|e|i|o|u|y|ä|ö];
+def C [b|c|č|d|f|g|h|j|k|l|m|n|p|r|s|š|z|ž|t|v];
+
+read lexc krl.lexc
+def Lex;
+
+def BackV [a|o|u];
+def Markers %^ | W | G | "[PRT_SG]" | "[PRT_PL]";
+
+def eInsertion [..] -> e || C _ "^" ?* G; # Vocal stem
+
+def Partitive o  "[PRT_SG]" -> u o || C _  
+          .o. "[PRT_SG]" -> t A
+          .o. "[PRT_PL]" -> i "^" e  || C _ 
+          .o. "[PRT_PL]" -> i "^" t A || V V  _
+          .o. "[PRT_PL]" -> j A;
+
+def kGradation l t -> l l || _ (V) "^" ?* W # Weak grades
+          .o. š -> h || _ V "^"; # Weak grades
+
+def jReplacement  i -> j || o _ %^ e;
+
+def vGradation u -> 0 || _ V i %^ 
+           .o. u o -> o i || _ [j|i] %^;
+
+!def Harmony A -> a, O -> o, U -> u || \BackV+ ?* _ 
+def Harmony A -> a, O -> o, U -> u || [a|o|u]+ ?* _ 
+        .o. A -> ä, O -> ö, U -> y;
+
+def Cleanup Markers -> 0;
+
+def Grammar Lex .o. eInsertion .o. Partitive .o. kGradation .o. jReplacement .o. vGradation .o. Harmony .o. Cleanup;
+
+regex Grammar;
+
+ !save stack krl.bin
